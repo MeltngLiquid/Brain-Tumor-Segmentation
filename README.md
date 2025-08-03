@@ -1,53 +1,41 @@
-# Brain Tumor Segmentation using 3D U‑Net (BraTS 2020)
+**Brain Tumor Segmentation with U-Net (BraTS Dataset)**
 
-A 3D U‑Net framework engineered to automatically delineate glioma subregions—enhancing tumor, tumor core, and whole tumor—in multimodal MRI scans from the BraTS 2020 challenge. This project addresses critical challenges in medical image analysis, enabling reproducible experimentation with volumetric deep-learning models.
-
----
-
-## 🔍 Problem Statement
-
-Glioma segmentation in 3D MRI involves tackling:
-
-* **Heterogeneous Tumor Appearance**: Variability across patients and MRI modalities (FLAIR, T1, T1ce, T2).
-* **Severe Class Imbalance**: Small tumor subregions vs. large healthy tissue.
-* **Volumetric Complexity**: High-resolution 3D data demands efficient patch-wise processing to fit GPU memory.
+This project implements a U-Net architecture using TensorFlow/Keras to perform semantic segmentation on 2D MRI slices from the BraTS dataset. The goal is to accurately localize and delineate brain tumor regions from the scans.
 
 ---
 
-## 📝 Solution Architecture
+## What This Project Does
 
-1. **Modality‑Aware Preprocessing**
-   Harmonize voxel intensities per MRI modality and remap segmentation labels into discrete classes.
+* **Reads Medical Imaging Data**: The notebook processes `.nii` (NIfTI) files from the BraTS dataset to extract 2D axial slices containing tumor regions.
 
-2. **Patch‑Wise Data Handling**
-   Extract overlapping 3D patches from volumes, balancing healthy vs. tumor tissue for robust training.
+* **Preprocessing**:
 
-3. **Custom 3D U‑Net Model**
-   Encoder-decoder network with skip connections, batch normalization, and residual blocks for rich spatial context.
+  * Normalizes intensity values
+  * Selects relevant slices (e.g., with visible tumor regions)
+  * Performs resizing and padding to ensure uniform input shape
 
-4. **Hybrid Loss Strategy**
-   Combine Dice and Focal losses to mitigate class imbalance and improve boundary accuracy.
+* **Model Implementation**:
 
-5. **Quantitative & Qualitative Evaluation**
-   Compute Dice coefficient and IoU for each subregion; visualize predicted masks overlaid on MRI slices.
+  * Defines a symmetric U-Net architecture using `Conv2D`, `MaxPooling2D`, `Conv2DTranspose`, and skip connections
+  * Designed to preserve spatial information for pixel-level segmentation
 
----
+* **Training Details**:
 
-## 🚀 Key Highlights
+  * Uses a combined **Dice Loss + Binary Crossentropy** for handling class imbalance
+  * Optimized using **Adam** optimizer
+  * Trained using Keras on batches of image-mask pairs
 
-* **Clinical-Grade Precision**: Achieves high Dice scores (Core: 0.82, Enhancing: 0.78, Whole Tumor: 0.89) on validation volumes.
-* **Reproducible Pipeline**: Modular scripts for preprocessing, model training, and evaluation facilitate rapid iteration.
-* **Extensible Design**: Swap loss functions, incorporate advanced augmentations, or benchmark alternative architectures (e.g., nnU‑Net) with minimal adjustments.
+* **Evaluation Metrics**:
 
----
+  * **Dice Coefficient**: Measures overlap between predicted and ground truth masks
+  * **IoU (Intersection over Union)**: Evaluates segmentation accuracy
+  * Visual outputs show segmented tumor regions overlaid on original scans
 
-## ⚙️ Technology Stack
+* **Output Examples**:
 
-* **Python 3.8+**
-* **TensorFlow / Keras**
-* **NumPy, NiBabel**
-* **Matplotlib**
+  * Ground truth masks vs predicted masks shown side-by-side
+  * Qualitative assessment of how well the model captures tumor boundaries
 
 ---
 
-> *Combining volumetric deep learning with clinical insights to streamline brain tumor analysis.*
+This notebook is suitable for anyone looking to understand how medical image segmentation works using deep learning, and is particularly focused on tumor detection in brain MRI scans. All components—from data loading to model evaluation—are implemented in a single notebook for clarity and reproducibility.
